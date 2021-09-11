@@ -45,8 +45,8 @@ jobs:
           name: Build, test and push docker image
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PWD}
-            docker build -t leenabhavnani/my-node-app:2.0 .
-            docker run -d --rm --name nodeapp -p 8080:8080 leenabhavnani/my-node-app:2.0
+            docker build -t 130987/capstone:2.0 .
+            docker run -d --rm --name nodeapp -p 8080:8080 130987/capstone:2.0
             sleep 10
             docker container ls
             export url="http://localhost:8080"
@@ -58,7 +58,7 @@ jobs:
               docker stop nodeapp
               exit 1
             fi
-            docker push leenabhavnani/my-node-app:2.0
+            docker push 130987/capstone:2.0
             
   test-cluster:
     executor: aws-eks/python3
@@ -141,16 +141,4 @@ workflows:
             cluster-name:  udacity-capstone
             requires:
               - create-deployment              
-        - aws-eks/update-container-image:
-            cluster-name: udacity-capstone
-            container-image-updates: 'my-capstone-deployment=leenabhavnani/my-node-app:2.0'
-            get-rollout-status: true
-            record: true
-            requires:
-             - test-deployment
-            resource-name:  deployment/my-capstone-deployment            
         
-        - aws-eks/delete-cluster:
-            cluster-name: udacity-capstone
-            requires:
-              - aws-eks/update-container-image
